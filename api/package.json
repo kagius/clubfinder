@@ -1,0 +1,20 @@
+{
+  "name": "clubfinder-api",
+  "description": "A JS Api for Clubfinder",
+  "version": "0.0.0",
+  "engines": {
+    "node": ">= 0.8.0"
+  },
+  "scripts": {
+    "test": "grunt nodeunit"
+  },
+  "author": {
+    "name": "Karl Agius",
+    "email": "karl.agius@gmail.com",
+    "url": "http://karlagius.com"
+  },
+  "devDependencies": {
+    "grunt": "~0.4.1",
+    "grunt-contrib-nodeunit": "~0.2.2"
+  }
+}
