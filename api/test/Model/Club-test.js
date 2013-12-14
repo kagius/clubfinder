@@ -40,7 +40,6 @@ exports.clubFetchShouldOnlyReturnApprovedItems = function(test){
 			var model = new ClubModel(app);
 			model.fetch(10, 1, function(err, data) {
 					
-				console.log("in callback");
 				// Clean up after our test.
 				collection.drop();
 				db.close();
