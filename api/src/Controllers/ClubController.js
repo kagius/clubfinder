@@ -32,13 +32,16 @@ module.exports = function(app, baseUrl) {
 		byLocation: {
 			method: "get",
 			routes: [
-				"loc/:country/:city", 
-				"loc/:country"],
+				"loc/co/:country/ct/:city", 
+				"loc/co/:country"],
 			version: "1.0.0",
 			implementation: function(req, callback) {
 
 				var country = req.params.country.toLowerCase();
 				var city = (req.params.city) ? req.params.city.toLowerCase() : country;
+
+				console.log("country: " + country);
+				console.log("city: " + city);
 
 				return self.app.model.Clubs.byLocation(country, city, callback);
 			},
