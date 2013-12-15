@@ -26,6 +26,9 @@ module.exports = function(app) {
 		if (self.app.config.logging.trace)
 			console.log ("Preparing response in format: " + req.params.format);
 		
+		if (self.app.config.headers.accessControlAllowOrigins)
+			res.setHeader('Access-Control-Allow-Origin', self.app.config.headers.accessControlAllowOrigins);
+		
 		res.setHeader('content-type', 'application/json');
 		res.send(data);
 	}
