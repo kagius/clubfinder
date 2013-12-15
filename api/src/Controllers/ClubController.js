@@ -14,7 +14,7 @@ module.exports = function(app, baseUrl) {
 		 */
 		fetch: {
 			method: "get",
-			route: "all/:page/showing/:pageSize",
+			routes: ["all/:page/showing/:pageSize"],
 			version: "1.0.0",
 			implementation: function(req, callback) {
 				return self.app.model.Clubs.fetch(req.params.pageSize, req.params.page, callback);
@@ -31,10 +31,16 @@ module.exports = function(app, baseUrl) {
 		 */
 		byLocation: {
 			method: "get",
-			route: "loc/:country/:city",
+			routes: [
+				"loc/:country/:city", 
+				"loc/:country"],
 			version: "1.0.0",
 			implementation: function(req, callback) {
-				return self.app.model.Clubs.byLocation(req.params.country, req.params.city, callback);
+
+				var country = req.params.country.toLowerCase();
+				var city = (req.params.city) ? req.params.city.toLowerCase() : country;
+
+				return self.app.model.Clubs.byLocation(country, city, callback);
 			},
 			htmlTemplate: "club-list"
 		},
@@ -47,7 +53,7 @@ module.exports = function(app, baseUrl) {
 		 */
 		byName: {
 			method: "get",
-			route: "name/:name",
+			routes: ["name/:name"],
 			version: "1.0.0",
 			implementation: function(req, callback) {
 				return self.app.model.Clubs.byName(req.params.name, callback);
@@ -62,7 +68,7 @@ module.exports = function(app, baseUrl) {
 		 */
 		bySlug: {
 			method: "get",
-			route: "detail/:slug",
+			routes: ["detail/:slug"],
 			version: "1.0.0",
 			implementation: function(req, callback) {
 				return self.app.model.Clubs.bySlug(req.params.slug, callback);

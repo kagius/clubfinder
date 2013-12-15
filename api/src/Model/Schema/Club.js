@@ -18,6 +18,7 @@ var clubSchema = new Schema({
 	},
 	administrators: [String],
 	address: {
+		building: String,
 		street: String,
 		city: String,
 		country: String,

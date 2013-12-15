@@ -47,16 +47,20 @@ module.exports = function(app) {
 
 	this.registerHandlers = function(baseUrl, handlers) {
 		for (var name in handlers) {
+			
 			var handler = handlers[name];
-
-			if (self.app.config.logging.trace) {
-				console.log ("Registering " + handler.method + " handler " + name + " for route '" + baseUrl +  handler.route + "' v" + handler.version);
-				console.log ("Registering " + handler.method + " handler " + name + " for route '" + baseUrl +  handler.route + "/:format" + "' v" + handler.version);
-			}
-		
 			var handlerWrapper = self.generateHandler(name, handler);
-			self.setRoute(handler.method, { path: baseUrl + handler.route, version: handler.version }, handlerWrapper);
-			self.setRoute(handler.method, { path: baseUrl + handler.route + "/:format", version: handler.version }, handlerWrapper);
+			
+			for (var i in handler.routes) {
+
+				if (self.app.config.logging.trace) {
+					console.log ("Registering " + handler.method + " handler " + name + " for route '" + baseUrl +  handler.routes[i] + "' v" + handler.version);
+					console.log ("Registering " + handler.method + " handler " + name + " for route '" + baseUrl +  handler.routes[i] + "/:format" + "' v" + handler.version);
+				}
+							
+				self.setRoute(handler.method, { path: baseUrl + handler.routes[i], version: handler.version }, handlerWrapper);
+				self.setRoute(handler.method, { path: baseUrl + handler.routes[i] + "/:format", version: handler.version }, handlerWrapper);
+			}
 		}
 	};
 };
