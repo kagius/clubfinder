@@ -27,8 +27,8 @@ exports.testClubControllerFetch = function(test){
 
 exports.testClubControllerByLocation = function(test){
 
-	var expectedCountry = "Malta";
-	var expectedCity = "Floriana";
+	var expectedCountry = "malta";
+	var expectedCity = "floriana";
 
 	var actualCountry = "";
 	var actualCity = "";
@@ -42,10 +42,34 @@ exports.testClubControllerByLocation = function(test){
 	};
 	
 	var controller = new ClubController(app, "/test/");
-	controller.handlers.byLocation.implementation({ params: { country: expectedCountry, city: expectedCity } });
+	controller.handlers.byLocation.implementation({ params: { country: "Malta", city: "Floriana" } });
 
-	test.equal(actualCity, expectedCity, "The controller should always pass the exact city name to the model.");
-	test.equal(actualCountry, expectedCountry, "The controller should pass the exact country name to the model.");    
+	test.equal(actualCity, expectedCity, "The controller should always pass the lower-case city name to the model.");
+	test.equal(actualCountry, expectedCountry, "The controller should pass the lower-case country name to the model.");    
+	test.done();
+};
+
+exports.testClubControllerByLocationShouldPassIdenticalParametersIfOnlyOneIsGiven = function(test){
+
+	var expectedCountry = "malta";
+	var expectedCity = "malta";
+
+	var actualCountry = "";
+	var actualCity = "";
+
+	var app = new MockApplication();
+	app.model.Clubs = {
+		byLocation: function(country, city) {
+			actualCountry = country;
+			actualCity = city;
+		}
+	};
+	
+	var controller = new ClubController(app, "/test/");
+	controller.handlers.byLocation.implementation({ params: { country: "Malta" } });
+
+	test.equal(actualCity, expectedCity, "The controller should always pass the lower-case city name to the model.");
+	test.equal(actualCountry, expectedCountry, "The controller should pass the lower-case country name to the model.");    
 	test.done();
 };
 

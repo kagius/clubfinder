@@ -169,3 +169,97 @@ exports.clubFetchShouldSkipWhenPaging = function(test){
 		});
 	});
 }
+
+exports.clubShouldReturnResultsByLocation = function(test) {
+	var app = new MockApplication();
+	app.config.db.url = "mongodb://localhost:27017/clubModelTest";
+
+	mongoose.connect(app.config.db.url);
+	app.db = mongoose.connection;
+
+	MongoClient.connect(app.config.db.url, function(err, db) {
+
+		if (err) console.log(err);
+
+		test.expect(3);
+
+		db.collection("clubs", function(err, collection) {			
+
+			// Clear any residual data from other tests.
+			collection.drop();
+
+			// Add our test data
+			collection.insert({ name: "test1", approved: { status: true, on: new Date() }, address: { city: "floriana", country: "malta" } }, function(err, result) { callback(err); });
+			collection.insert({ name: "test2", approved: { status: true, on: new Date() }, address: { city: "mosta", country: "malta" } }, function(err, result) { callback(err); });		
+			collection.insert({ name: "test3", approved: { status: true, on: new Date() }, address: { city: "edinburgh", country: "scotland" } }, function(err, result) { callback(err); });
+			collection.insert({ name: "test4", approved: { status: false, on: new Date() }, address: { city: "mosta", country: "malta" } }, function(err, result) { callback(err); });
+			collection.insert({ name: "test5", approved: { status: false, on: new Date() }, address: { city: "floriana", country: "malta" } }, function(err, result) { callback(err); });
+
+			var model = new ClubModel(app);
+
+			var city = "mosta";
+			var country = "malta";
+
+			model.byLocation(country, city, function(err, data) {
+					
+				// Clean up the test collection.
+				collection.drop();
+				db.close();
+				app.db.close();
+
+				test.equal(data.result.length, 2, "When requesting clubs in a location, both city and country matches should be considered.");
+				test.equal(data.result[0].name, "test2", "Clubs exactly matching the city should be returned first.");
+				test.equal(data.result[1].name, "test1", "Clubs matching the country should be returned later.");
+			
+				test.done();
+			});
+		});
+	});
+}
+
+exports.clubShouldReturnResultsByCountryIfNoCityPresent = function(test) {
+	var app = new MockApplication();
+	app.config.db.url = "mongodb://localhost:27017/clubModelTest";
+
+	mongoose.connect(app.config.db.url);
+	app.db = mongoose.connection;
+
+	MongoClient.connect(app.config.db.url, function(err, db) {
+
+		if (err) console.log(err);
+
+		test.expect(3);
+
+		db.collection("clubs", function(err, collection) {			
+
+			// Clear any residual data from other tests.
+			collection.drop();
+
+			// Add our test data
+			collection.insert({ name: "test1", approved: { status: true, on: new Date() }, address: { city: "floriana", country: "malta" } }, function(err, result) { callback(err); });
+			collection.insert({ name: "test2", approved: { status: true, on: new Date() }, address: { city: "mosta", country: "malta" } }, function(err, result) { callback(err); });		
+			collection.insert({ name: "test3", approved: { status: true, on: new Date() }, address: { city: "edinburgh", country: "scotland" } }, function(err, result) { callback(err); });
+			collection.insert({ name: "test4", approved: { status: false, on: new Date() }, address: { city: "mosta", country: "malta" } }, function(err, result) { callback(err); });
+			collection.insert({ name: "test5", approved: { status: false, on: new Date() }, address: { city: "floriana", country: "malta" } }, function(err, result) { callback(err); });
+
+			var model = new ClubModel(app);
+
+			var city = null;
+			var country = "malta";
+
+			model.byLocation(country, city, function(err, data) {
+					
+				// Clean up the test collection.
+				collection.drop();
+				db.close();
+				app.db.close();
+
+				test.equal(data.result.length, 2, "When requesting clubs in a location, both city and country matches should be considered.");
+				test.equal(data.result[0].name, "test1", "Clubs should be ordered by name.");
+				test.equal(data.result[1].name, "test2", "Clubs should be ordered by name.");
+			
+				test.done();
+			});
+		});
+	});
+}

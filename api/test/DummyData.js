@@ -10,8 +10,30 @@ MongoClient.connect("mongodb://localhost/test", function(err, db) {
 		collection.drop();
 
 		// Add our test data
-		collection.insert({ name: "test1", 	approved: { status: true, 	on: new Date() } }, function(err, result) {});
-		collection.insert({ name: "test2", 	approved: { status: true, 	on: new Date() } }, function(err, result) {});
+		collection.insert(
+			{ 
+				name: "test1", 	
+				approved: { status: true, 	on: new Date() },
+				address: {	
+					building: "St. Publius Hall",
+					street: "St. Publius Street",
+					city: "floriana",
+					country: "malta",
+				},
+
+			}, function(err, result) {});
+		collection.insert(
+			{ 
+				name: "Home", 	
+				approved: { status: true, 	on: new Date() },
+				address: {	
+					building: "whatever",
+					street: "whatever",
+					city: "mosta",
+					country: "malta",
+				},
+
+			}, function(err, result) {});
 		collection.insert({ name: "test3", 	approved: { status: false, 	on: new Date() } }, function(err, result) {});
 		collection.insert({ name: "test4", 	approved: { status: true, 	on: new Date() } }, function(err, result) {});
 		collection.insert({ name: "test5", 	approved: { status: true, 	on: new Date() } }, function(err, result) {});
