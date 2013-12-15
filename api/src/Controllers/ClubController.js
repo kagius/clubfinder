@@ -40,9 +40,6 @@ module.exports = function(app, baseUrl) {
 				var country = req.params.country.toLowerCase();
 				var city = (req.params.city) ? req.params.city.toLowerCase() : country;
 
-				console.log("country: " + country);
-				console.log("city: " + city);
-
 				return self.app.model.Clubs.byLocation(country, city, callback);
 			},
 			htmlTemplate: "club-list"
